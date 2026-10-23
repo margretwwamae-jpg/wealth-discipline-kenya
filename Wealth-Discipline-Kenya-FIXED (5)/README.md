@@ -19,3 +19,41 @@ Open this folder in Android Studio with Android SDK Platform 35 installed, then 
 
 ## Important
 This is a simple starter implementation, not a regulated financial product. It does not connect to bank or M-Pesa accounts, execute investments, or provide live investment rates. Keep your phone protected and use the app's on-device data carefully.
+
+name: Build Wealth Discipline Kenya APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get project files
+        uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install Android build tools
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Build APK
+        run: gradle assembleDebug
+        working-directory: Wealth-Discipline-Kenya-FIXED (5)
+      - name: Save APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Wealth-Discipline-Kenya-debug-apk
+          path: Wealth-Discipline-Kenya-FIXED (5)/app/build/outputs/apk/debug/app-debug.apk
